@@ -27,8 +27,7 @@ Gas_CT_ERCOT,Gas-CT
 NGCT_MX,Gas-CT
 gas-ct,Gas-CT
 Cogen_MX,Gas-CT
-Dual_Fuel_NE,Dual Fuel
-Oil/CT,Oil-Gas-Steam
+Dual_Fuel_NE,Storage
 Oil/Steam,Oil-Gas-Steam
 Gas_ST_ERCOT,Oil-Gas-Steam
 NG_ST_EI,Oil-Gas-Steam
@@ -64,6 +63,8 @@ MotorLoad_WI,Other
 Other_MX,Other
 2024_Wind,Wind
 wind-ons,Wind
+csp2_12,CSP
+csp2_10,CPS
 CSP,CSP
 CSP-TES_WI,CSP
 CSP-noTES_WI,CSP
@@ -148,9 +149,14 @@ SynchCond,Other
 Wind,Wind
 ReEDS_canada,Net Imports
 ReEDS_wind-ofs,Wind
+wind-ofs_1,Wind
 ReEDS_nuclear,Nuclear
 ReEDS_csp,CSP
+csp-ns,CSP
 ReEDS_gas-cc-ccs,Gas-CC CCS
+Gas-CC-CCS-F2,Gas-CC CCS
+CSU_NGCCgas-cc-ccs-f2,Gas-CC CCS
+CSU_pumpgas-cc-ccs-f2,TES pump
 ReEDS_hydsnd,Hydro
 Hydro_MonthlyEnergy,Hydro
 Hydro_FixedDispatch,Hydro
@@ -245,8 +251,7 @@ XcelPV,PV
 XcelNG,Gas-CC
 XcelBattery,Storage
 OSW_BESS,OSW-Battery
-Battery,Battery
-Solar,PV
+Battery,Storage
 Liquid Fuel,Oil-Gas-Steam
 Natural Gas,Oil-Gas-Steam
 Biopower,Biopower
@@ -289,13 +294,12 @@ dupv_4,dPV
 dupv_5,dPV
 dupv_6,dPV
 dupv_7,dPV
-battery_2,Battery
-battery_4,Battery
-battery_6,Battery
-battery_8,Battery
-battery_10,Battery
-reeds_vre,VRE
-csp-ns,CSP
+battery_2,Storage
+battery_4,Storage
+battery_6,Storage
+battery_8,Storage
+battery_10,Storage
+reeds_vre,Storage
 hydND,Hydro
 hydUD,Hydro
 hydUND,Hydro
@@ -312,6 +316,8 @@ geohydro_pflash_1,Geothermal
 geohydro_pflash_2,Geothermal
 geohydro_pflash_3,Geothermal
 geohydro_pflash_4,Geothermal
+geohydro_pflash_5,Geothermal
+geohydro_pflash_6,Geothermal
 undisc_pflash_1,Geothermal
 NF-EGS_pflash_5,Geothermal
 NF-EGS_pbinary_1,Geothermal
