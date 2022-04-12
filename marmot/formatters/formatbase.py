@@ -65,19 +65,21 @@ class Process:
         self,
         input_folder: Path,
         output_file_path: Path,
-        Region_Mapping: pd.DataFrame,
-        emit_names: pd.DataFrame,
         *_,
+        Region_Mapping : pd.DataFrame = pd.DataFrame(),
+        emit_names : pd.DataFrame = pd.DataFrame(),
         **__,
     ):
         """
         Args:
             input_folder (Path): Folder containing model input files.
             output_file_path (Path): Path to formatted h5 output file.
-            Region_Mapping (pd.DataFrame): DataFrame to map custom
+            Region_Mapping (pd.DataFrame, optional): DataFrame to map custom
                 regions/zones to create custom aggregations.
-            emit_names (pd.DataFrame): DataFrame with 2 columns to rename
+                Defaults to pd.DataFrame().
+            emit_names (pd.DataFrame, optional): DataFrame with 2 columns to rename
                 emission names.
+                Defaults to pd.DataFrame().
         """
         self.input_folder = input_folder
         self.output_file_path = output_file_path
@@ -91,16 +93,49 @@ class Process:
                 .to_dict()["New"]
             )
 
+    @property
+    def input_folder(self) -> Path:
+        """Path to input folder
+
+        Returns:
+            Path: input_folder
+        """
+        return self._input_folder
+
+    @input_folder.setter
+    def input_folder(self, value):
+        self._get_input_files = None
+        self._file_collection = None
+        self._input_folder = Path(value)
+
+    @property
     def get_input_files(self) -> list:
-        """Gets a list of input files within the scenario folders"""
-        files = []
-        for names in self.input_folder.iterdir():
-            files.append(names.name)
+        """Gets a list of input files within the scenario folders
 
-        # List of all files in input folder in alpha numeric order
-        files_list = sorted(files, key=lambda x: int(re.sub("\D", "", x)))
+        Returns:
+            list: list of input filenames to process
+        """
+        if self._get_input_files == None:
+            files = []
+            for names in self.input_folder.iterdir():
+                files.append(names.name)
 
-        return files_list
+            # List of all files in input folder in alpha numeric order
+            self._get_input_files = sorted(files, key=lambda x: int(re.sub("\D", "0", x)))
+        return self._get_input_files 
+
+    @property
+    def file_collection(self) -> dict:
+        """Dictionary input file names to full filename path 
+
+        Returns:
+            dict: file_collection {filename: fullpath}
+        """
+        if self._file_collection == None:
+            self._file_collection = {}
+            for file in self.get_input_files:
+                self._file_collection[file] = str(self.input_folder.joinpath(file))
+        return self._file_collection
 
     def output_metadata(self, files_list: list) -> None:
         """method template for output_metadata
@@ -108,7 +143,7 @@ class Process:
         Args:
             files_list (list): list of string files or filenames
         """
-        pass
+        raise NotImplementedError("No default implementation of this functionality")
 
     def get_processed_data(
         self, prop_class: str, property: str, timescale: str, model_filename: str
@@ -124,7 +159,7 @@ class Process:
         Returns:
             pd.DataFrame: pd.DataFrame
         """
-        pass
+        raise NotImplementedError("No default implementation of this functionality")
 
     def report_prop_error(self, property: str, prop_class: str) -> pd.DataFrame:
         """Outputs a warning message when the get_processed_data method
@@ -142,4 +177,28 @@ class Process:
         )
         logger.info("SKIPPING PROPERTY\n")
         df = pd.DataFrame()
+        return df
+
+    def combine_models(self, model_list: list, 
+        drop_duplicates: bool = True) -> pd.DataFrame:
+        """Combine temporally disaggregated model results.
+
+        Will drop duplicate index entries by default.
+
+        Args:
+            model_list (list): list of df models to combine.
+            drop_duplicates (bool, optional): Drop duplicate index entries.
+                Defaults to True.
+
+        Returns:
+            pd.DataFrame: Combined df
+        """
+        df = pd.concat(model_list, copy=False)
+        if drop_duplicates:
+            origsize = df.size
+            # Remove duplicates; keep first entry
+            df = df.loc[~df.index.duplicated(keep="first")]
+
+            if (origsize - df.size) > 0:
+                logger.info(f"Drop duplicates removed {origsize-df.size} rows")
         return df
